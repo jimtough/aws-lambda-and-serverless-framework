@@ -22,6 +22,79 @@ https://www.udemy.com/course/aws-lambda-serverless/
 * Install node.js locally. Version shouldn't matter. Just install newest version.
 * Install the 'serverless' package from npm
   * `npm install -g serverless` 
+* Configure the 'serverless' package to use the AWS IAM user that you created above.
+  * `serverless config credentials --provider aws --key XXX --secret YYY --profile serverless-admin`
+  * Just replace XXX and YYY with your IAM user's access key ID and access key value
+
+## serverless
+
+* Typing 'serverless' at the command line will now issue commands to the serverless module
+  * On Windows PowerShell this seems to work from anywhere, so I assume the node.js module download also caused serverless to be added to my system path.
+  * Something in Windows PowerShell already uses the command 'sls', so that shortcut for the 'serverless' command does not work.
+* Try this: `serverless --help`
+
+# The Hello World Python project
+
+## How to create it
+
+Use the following command to create the new project in a subdirectory of your current location:
+
+`serverless create --template aws-python --path hello-world-python`
+
+## How to deploy it
+
+Use the following command to deploy the project to your AWS account:
+
+`serverless deploy -v`
+
+This will create some objects on your AWS account (a CloudFormation stack, an S3 bucket, a role, etc).
+
+You can now go to the AWS Management Console, navigate to the 'Lambda' service, and run a test against the deployed 'hello-world-python-dev-hello' function.
+
+## How to run from your local command line
+
+Use this command:
+
+`serverless invoke -f hello -l`
+
+This first line that comes back is the return value. The rest is the log output (-l means you want the log output).
+
+## How to update the function code
+
+* Make your code change inside 'handler.py' (for the first Hello World function)
+* Execute this command:
+  * `serverless deploy -v`
+* Verify updated function with this command:
+  * `serverless invoke -f hello -l`
+* NOTE: Update to function will cause a new CloudFormation log stream to be created, replacing previous one
+
+### How to deploy only function update (without changing CloudFormation stacks)
+
+* Make your code change inside 'handler.py' (for the first Hello World function)
+* Execute this command:
+  * `serverless deploy function -f hello`
+* Verify updated function with this command:
+  * `serverless invoke -f hello -l`
+* NOTE: Update to function will cause a new CloudFormation log stream to be created, replacing previous one
+
+## How to fetch function logs via AWS CLI
+
+Use this command to retrieve and tail the logs for the 'hello' function:
+
+`serverless logs -f hello -t`
+
+In a separate terminal session, invoke the function so some log output will be generated:
+
+`serverless invoke -f hello -l`
+
+After a few seconds, the log output show reach CloudWatch and in turn be displayed in the first console session.
+
+## How to destroy it
+
+`serverless remove`
+
+Will remove the function, and the CloudFormation stacks that were originally created when you deployed.
+
 
 
 
